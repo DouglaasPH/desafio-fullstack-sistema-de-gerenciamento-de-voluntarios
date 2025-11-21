@@ -1,3 +1,4 @@
+// react
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -5,10 +6,13 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+// routes
+import Dashboard from "./pages/Dashboard/Dashboard";
+
 const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
-      <Route index />
+      <Route index element={<Dashboard />} />
     </Route>
   )
 );
