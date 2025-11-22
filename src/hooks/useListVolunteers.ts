@@ -15,7 +15,7 @@ import type {
 import { listVolunteer } from "@/api/volunteers";
 
 export const useListVolunteers = (filters: FiltersVolunteer = {}) => {
-  return useQuery<Volunteer[], AxiosError<ApiErrorResponse>, FiltersVolunteer>({
+  return useQuery<Volunteer[], AxiosError<ApiErrorResponse>>({
     queryKey: ["volunteers"],
     queryFn: () => listVolunteer(filters),
   });
