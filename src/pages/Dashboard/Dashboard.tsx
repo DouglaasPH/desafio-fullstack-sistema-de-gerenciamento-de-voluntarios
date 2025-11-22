@@ -79,7 +79,7 @@ function Dashboard() {
           <SelectFilter
             value={status}
             onChange={setStatus}
-            options={["Todos os status", "ativo", "inativo"]}
+            options={["Todos os status", "Ativo", "Inativo"]}
           />
           <SelectFilter
             value={position}
@@ -89,7 +89,7 @@ function Dashboard() {
           <SelectFilter
             value={availability}
             onChange={setAvailability}
-            options={["Todas as disponibilidades", "manha", "tarde", "noite"]}
+            options={["Todas as disponibilidades", "Manhã", "Tarde", "Noite"]}
           />
         </Card>
       </section>
