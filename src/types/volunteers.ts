@@ -6,7 +6,7 @@ export interface Volunteer {
   cargo_pretendido: string;
   disponibilidade: string;
   status: string;
-  create_at: string;
+  created_at: string;
 }
 
 export interface CreateVolunteerData {
@@ -37,3 +37,9 @@ export type VolunteerAvailability =
   | "tarde"
   | "noite"
   | "Todas as disponibilidades";
+
+export type ApiErrorResponse = {
+  message: string;
+  error?: string;
+  statusCode?: number;
+};
