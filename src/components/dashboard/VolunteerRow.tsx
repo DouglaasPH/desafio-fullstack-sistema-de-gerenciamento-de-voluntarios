@@ -2,6 +2,7 @@ import type { Volunteer } from "@/types/volunteers";
 import { TableCell, TableRow } from "../ui/table";
 import { CircleX, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { formatData } from "@/utils/utils";
 
 function VolunteerRow({
   volunteer,
@@ -33,11 +34,11 @@ function VolunteerRow({
         </span>
       </TableCell>
       <TableCell className="font-medium px-5 py-5">
-        {volunteer.create_at}
+        {formatData(volunteer.created_at)}
       </TableCell>
       <TableCell className="pr-10">
         <div className="flex flex-row items-center justify-end gap-5">
-          {volunteer.status === "ativo" ? (
+          {volunteer.status === "Ativo" ? (
             <>
               <button
                 className="cursor-pointer"
