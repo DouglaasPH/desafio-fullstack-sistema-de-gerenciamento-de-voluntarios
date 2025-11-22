@@ -29,3 +29,11 @@ export interface UpdateVolunteer {
   cargo_pretendido?: string;
   disponibilidade?: string;
 }
+
+export type VolunteerStatus = "ativo" | "inativo" | "Todos os status";
+
+export type VolunteerAvailability =
+  | "manha"
+  | "tarde"
+  | "noite"
+  | "Todas as disponibilidades";

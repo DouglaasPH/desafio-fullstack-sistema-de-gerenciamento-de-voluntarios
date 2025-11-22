@@ -8,11 +8,18 @@ import {
 
 // routes
 import Dashboard from "./pages/Dashboard/Dashboard";
+import NewVolunteer from "./pages/NewVolunteer/NewVolunteer";
+import UpdateVolunteer from "./pages/UpdateVolunteer/UpdateVolunteer";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
       <Route index element={<Dashboard />} />
+      <Route path="new-volunteer" element={<NewVolunteer />} />
+      <Route
+        path="update-volunteer/:volunteer_id"
+        element={<UpdateVolunteer />}
+      />
     </Route>
   )
 );

@@ -29,9 +29,10 @@ export const getVolunteer = async (
 };
 
 export const updateVolunteer = async (
+  volunteer_id: number,
   data: UpdateVolunteer
 ): Promise<Volunteer> => {
-  const response = await api.put("/volunteer", data);
+  const response = await api.put(`/volunteer/${volunteer_id}`, data);
   return response.data;
 };
 

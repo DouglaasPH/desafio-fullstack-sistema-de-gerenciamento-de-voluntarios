@@ -1,111 +1,50 @@
+import SelectFilter from "@/components/dashboard/SelectFilter";
+import VolunteerRow from "@/components/dashboard/VolunteerRow";
+import ErrorPage from "@/components/ErrorPage/ErrorPage";
+import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-  SelectItem,
-  SelectGroup,
-} from "@/components/ui/select";
-import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CircleX, Pencil, Plus } from "lucide-react";
+import { useFilteredVolunteers } from "@/hooks/useFilteredVolunteers";
+import { useSoftDeleteVolunteers } from "@/hooks/useSoftDeleteVolunteers";
+import { useListVolunteers } from "@/hooks/useListVolunteers";
+import { getAllPositions } from "@/utils/volunteer";
+import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
-
-interface Volunteer {
-  id: number;
-  nome: string;
-  email: string;
-  telefone: string;
-  cargo_pretendido: string;
-  disponibilidade: string;
-  status: string;
-  create_at: string;
-}
 
 function Dashboard() {
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("Todos os status");
   const [position, setPosition] = useState("Todos os cargos");
+  const [status, setStatus] = useState("Todos os status");
   const [availability, setAvailability] = useState("Todas as disponibilidades");
 
-  const fake_response: Volunteer[] = [
-    {
-      id: 1,
-      nome: "Douglas Phelipe",
-      email: "douglas@gmail.com",
-      telefone: "(11) 98765-4321",
-      cargo_pretendido: "Backend Jr",
-      disponibilidade: "manha",
-      status: "Ativo",
-      create_at: "2025-11-21T17:15:15.354241Z",
-    },
-    {
-      id: 2,
-      nome: "Douglas Phelipe",
-      email: "douglas@gmail.com",
-      telefone: "(11) 98765-4321",
-      cargo_pretendido: "Backend Jr",
-      disponibilidade: "manha",
-      status: "Ativo",
-      create_at: "2025-11-21T17:15:15.354241Z",
-    },
-    {
-      id: 3,
-      nome: "Douglas Phelipe",
-      email: "douglas@gmail.com",
-      telefone: "(11) 98765-4321",
-      cargo_pretendido: "Backend Jr",
-      disponibilidade: "manha",
-      status: "Ativo",
-      create_at: "2025-11-21T17:15:15.354241Z",
-    },
-    {
-      id: 4,
-      nome: "Douglas Phelipe",
-      email: "douglas@gmail.com",
-      telefone: "(11) 98765-4321",
-      cargo_pretendido: "Backend Jr",
-      disponibilidade: "manha",
-      status: "Inativo",
-      create_at: "2025-11-21T17:15:15.354241Z",
-    },
-  ];
+  const { data: volunteers = [], isLoading, isError } = useListVolunteers();
 
-  function formatVolunteer(v: Volunteer) {
-    const capitalize = (s: string) =>
-      s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  const allPositions = useMemo(() => getAllPositions(volunteers), [volunteers]);
 
-    const formatDate = (iso: string) => {
-      const date = new Date(iso);
-      const day = String(date.getDate()).padStart(2, "0");
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const year = String(date.getFullYear()).slice(2); // aa
-      return `${day}/${month}/${year}`;
-    };
+  const filteredVolunteers = useFilteredVolunteers(
+    volunteers,
+    search,
+    status,
+    position,
+    availability
+  );
 
-    return {
-      ...v,
-      status: capitalize(v.status),
-      create_at: formatDate(v.create_at),
-    };
-  }
+  const { mutate: softDelete } = useSoftDeleteVolunteers();
 
-  const allPositions = useMemo(() => {
-    const positions = new Set<string>();
+  const handleDeleteVolunteer = (id: number) => {
+    softDelete(id); // chama a mutação
+  };
 
-    fake_response.forEach((v) => positions.add(v.cargo_pretendido));
-
-    return Array.from(positions);
-  }, []);
+  if (isLoading) return <LoadingScreen />;
+  if (isError) return <ErrorPage code={500} message="Internal server error" />;
 
   return (
     <main className="w-full p-5 lg:p-10 flex flex-col gap-10">
@@ -118,7 +57,7 @@ function Dashboard() {
             Gerencie cadastros, visualize informações e acompanhe voluntários
           </p>
         </div>
-        <Button className="bg-[#2563EB] text-white flex flex-row items-center gap-4 cursor-pointer">
+        <Button className="bg-blue-600 hover:bg-blue-500  text-white flex flex-row items-center gap-4 cursor-pointer">
           <Plus strokeWidth={3} className="size-4" />
           <span className="text-sm font-normal">Novo Voluntário</span>
         </Button>
@@ -132,67 +71,21 @@ function Dashboard() {
             className="w-full lg:w-auto placeholder:text-gray-300"
           />
 
-          <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger className="w-full lg:w-auto">
-              <SelectValue>{status}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem key="Todos os status" value="todos os status">
-                  Todos os status
-                </SelectItem>
-                <SelectItem key="Ativo" value="Ativo">
-                  Ativo
-                </SelectItem>
-                <SelectItem key="Inativo" value="Inativo">
-                  Inativo
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-
-          <Select value={position} onValueChange={setPosition}>
-            <SelectTrigger className="w-full lg:w-auto">
-              <SelectValue>{position}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem key="Todos os cargos" value="Todos os cargos">
-                  Todos os cargos
-                </SelectItem>
-                {allPositions.map((position) => (
-                  <SelectItem key={position} value={position}>
-                    {position}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-
-          <Select value={availability} onValueChange={setAvailability}>
-            <SelectTrigger className="w-full lg:w-auto">
-              <SelectValue>{availability}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem
-                  key="Todas as disponibilidades"
-                  value="Todas as disponibilidades"
-                >
-                  Todas as disponibilidades
-                </SelectItem>
-                <SelectItem key="manha" value="Manhã">
-                  Manhã
-                </SelectItem>
-                <SelectItem key="tarde" value="Tarde">
-                  Tarde
-                </SelectItem>
-                <SelectItem key="noite" value="Noite">
-                  Noite
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <SelectFilter
+            value={status}
+            onChange={setStatus}
+            options={["Todos os status", "ativo", "inativo"]}
+          />
+          <SelectFilter
+            value={position}
+            onChange={setPosition}
+            options={["Todos os cargos", ...allPositions]}
+          />
+          <SelectFilter
+            value={availability}
+            onChange={setAvailability}
+            options={["Todas as disponibilidades", "manha", "tarde", "noite"]}
+          />
         </Card>
       </section>
       <section>
@@ -227,73 +120,21 @@ function Dashboard() {
               </TableRow>
             </TableHeader>
             <TableBody className="text-sm font-regular text-gray-500">
-              {fake_response.map((volunteer) => (
-                <TableRow key={volunteer.id}>
-                  <TableCell className="pl-10 text-gray-700 inter font-medium">
-                    {volunteer.nome}
-                  </TableCell>
-                  <TableCell className="px-5 py-5">{volunteer.email}</TableCell>
-                  <TableCell className="px-5 py-5">
-                    {volunteer.telefone}
-                  </TableCell>
-                  <TableCell className="px-5 py-5">
-                    {volunteer.cargo_pretendido}
-                  </TableCell>
-                  <TableCell className="px-5 py-5">
-                    {volunteer.disponibilidade}
-                  </TableCell>
-                  <TableCell className="px-5 py-5">
-                    <span
-                      className={
-                        volunteer.status == "Ativo"
-                          ? "bg-green-100 px-3 py-1 rounded-lg text-green-600 font-medium text-[0.7rem]"
-                          : "bg-gray-100 px-3 py-1 rounded-lg text-gray-600 font-medium text-[0.7rem]"
-                      }
-                    >
-                      {volunteer.status}
-                    </span>
-                  </TableCell>
-                  <TableCell className="font-medium px-5 py-5">
-                    {volunteer.create_at}
-                  </TableCell>
-                  <TableCell className="pr-10">
-                    <div className="flex flex-row items-center justify-end gap-5">
-                      {volunteer.status === "Ativo" ? (
-                        <>
-                          <button className="cursor-pointer">
-                            <Pencil
-                              strokeWidth={2.5}
-                              size={18}
-                              className="text-gray-600"
-                            />
-                          </button>
-                          <button className="cursor-pointer">
-                            <CircleX
-                              strokeWidth={2.5}
-                              size={18}
-                              className="text-gray-600"
-                            />
-                          </button>
-                        </>
-                      ) : (
-                        <button className="cursor-pointer">
-                          <Pencil
-                            strokeWidth={2.5}
-                            size={18}
-                            className="text-gray-600"
-                          />
-                        </button>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
+              {filteredVolunteers.map((volunteer) => (
+                <VolunteerRow
+                  volunteer={volunteer}
+                  onDelete={handleDeleteVolunteer}
+                />
               ))}
             </TableBody>
           </Table>
         </Card>
       </section>
       <section>
-        <p>Mostrando 5 de 5 voluntários</p>
+        <p>
+          Mostrando {filteredVolunteers.length} de {volunteers.length}{" "}
+          voluntários
+        </p>
       </section>
     </main>
   );
