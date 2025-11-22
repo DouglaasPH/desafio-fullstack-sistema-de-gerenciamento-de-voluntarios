@@ -1,4 +1,5 @@
 import ErrorPage from "@/components/ErrorPage/ErrorPage";
+import GlobalAlert from "@/components/global/GlobalAlert";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -29,19 +30,24 @@ function NewVolunteer() {
   const [isValidTelefone, setIsValidTelefone] = useState<null | true | false>(
     null
   );
+  const [viewAlert, setViewAlert] = useState(false);
 
   const { mutate: createVolunteer, status, error } = useCreateVolunteer();
 
   const handleCreateVolunteer = () => {
-    console.log(isValidEmail, isValidTelefone);
     if (
       nome == "" ||
       cargoPretendido == "" ||
       disponibilidade == "" ||
       isValidEmail !== true ||
       isValidTelefone !== true
-    )
+    ) {
+      setViewAlert(true);
+      setTimeout(() => {
+        setViewAlert(false);
+      }, 5000);
       return;
+    }
 
     const data: CreateVolunteerData = {
       nome: "",
@@ -72,6 +78,16 @@ function NewVolunteer() {
 
   return (
     <main className="w-full flex flex-col p-10 gap-8">
+      {viewAlert ? (
+        <div className="absolute w-full flex justify-center top-10 transition-all duration-300  -translate-y-5 opacity-0 animate-[slideDown_0.3s_ease_forwards]">
+          <GlobalAlert
+            title={"Não foi possível cadastrar voluntário."}
+            description={
+              "Para cadastrar voluntário é necessário preencher corretamente todos campos abaixo."
+            }
+          />
+        </div>
+      ) : null}
       <section className="">
         <button
           className="flex flex-row gap-5 text-sm items-center text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-xl cursor-pointer"
@@ -103,7 +119,7 @@ function NewVolunteer() {
             <div className="w-full flex flex-col gap-1">
               <div className="flex gap-5 items-center">
                 <label className="text-sm text-gray-800">Email * </label>
-                {isValidEmail && isValidEmail !== null ? null : (
+                {isValidEmail || isValidEmail == null ? null : (
                   <span className="text-[0.6rem] bg-red-500 text-white px-3 py-1 rounded-md">
                     Email inválido
                   </span>

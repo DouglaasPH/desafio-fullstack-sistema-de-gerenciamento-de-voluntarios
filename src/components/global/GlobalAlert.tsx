@@ -2,19 +2,21 @@ import { AlertCircleIcon } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export function AlertComp() {
+interface Props {
+  title: string;
+  description: string;
+}
+
+export function GlobalAlert({ title, description }: Props) {
   return (
     <Alert variant="destructive" className="w-md">
       <AlertCircleIcon />
-      <AlertTitle>Não foi possível atualizar voluntário.</AlertTitle>
+      <AlertTitle>{title}</AlertTitle>
       <AlertDescription>
-        <p>
-          Para atualizar voluntário é necessário alterar corretamente ao menos
-          um dos campos abaixo.
-        </p>
+        <p>{description}</p>
       </AlertDescription>
     </Alert>
   );
 }
 
-export default AlertComp;
+export default GlobalAlert;

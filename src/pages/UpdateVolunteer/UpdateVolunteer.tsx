@@ -4,7 +4,7 @@ import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import AlertComp from "@/components/updateVolunteer/Alert";
+import GlobalAlert from "@/components/global/GlobalAlert";
 import { useGetVolunteer } from "@/hooks/useGetVolunteer";
 import { useUpdateVolunteer } from "@/hooks/useUpdateVolunteer";
 import type { UpdateVolunteer } from "@/types/volunteers";
@@ -92,7 +92,12 @@ function UpdateVolunteer() {
     <main className="w-full flex flex-col p-10 gap-8">
       {viewAlert ? (
         <div className="absolute w-full flex justify-center top-10 transition-all duration-300  -translate-y-5 opacity-0 animate-[slideDown_0.3s_ease_forwards]">
-          <AlertComp />
+          <GlobalAlert
+            title={"Não foi possível atualizar voluntário."}
+            description={
+              "Para atualizar voluntário é necessário alterar corretamente ao menos um dos campos abaixo."
+            }
+          />
         </div>
       ) : null}
       <section className="">
