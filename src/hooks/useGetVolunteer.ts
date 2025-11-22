@@ -11,7 +11,7 @@ import type { ApiErrorResponse, Volunteer } from "@/types/volunteers";
 import { getVolunteer } from "@/api/volunteers";
 
 export const useGetVolunteer = (volunteer_id: number) => {
-  return useQuery<Volunteer, AxiosError<ApiErrorResponse>, number>({
+  return useQuery<Volunteer, AxiosError<ApiErrorResponse>, Volunteer>({
     queryKey: ["volunteer", volunteer_id], // query key única por ID
     queryFn: () => getVolunteer(volunteer_id),
     enabled: !!volunteer_id, // evita rodar sem ID
