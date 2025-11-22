@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useUpdateVolunteer } from "@/hooks/useUpdateVolunteer";
 import type { UpdateVolunteer } from "@/types/volunteers";
-import { validateEmail } from "@/utils/validators";
+import { validateEmail } from "@/utils/utils";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -30,25 +30,23 @@ function UpdateVolunteer() {
   const { mutate: updateVolunteer, status, error } = useUpdateVolunteer();
 
   const handleUpdateVolunteer = () => {
-    const data: UpdateVolunteer = {};
-    if (nome.length > 0) data.nome = nome;
-    if (email.length > 0) {
-      const validate = validateEmail(email);
-      if (validate) data.email = email;
-      else setIsValidEmail(false);
-    }
-    if (cargoPretendido.length > 0) data.cargo_pretendido = cargoPretendido;
-    if (disponibilidade.length > 0) data.disponibilidade = disponibilidade;
-
     if (
       nome == "" &&
-      email == "" &&
       cargoPretendido == "" &&
-      disponibilidade == ""
+      disponibilidade == "" &&
+      isValidEmail !== true
     )
       return;
+
+    const data: UpdateVolunteer = {};
+
+    if (nome.length > 0) data.nome = nome;
+    if (cargoPretendido.length > 0) data.cargo_pretendido = cargoPretendido;
+    if (disponibilidade.length > 0) data.disponibilidade = disponibilidade;
+    if (isValidEmail) data.email = email;
+
     const id = Number(volunteer_id);
-    updateVolunteer({ volunteer_id: id, data }); // chama a mutação
+    updateVolunteer({ volunteer_id: id, data });
   };
 
   if (status === "pending") return <LoadingScreen />;
@@ -96,11 +94,11 @@ function UpdateVolunteer() {
             <div className="w-full flex flex-col gap-1">
               <div className="flex gap-5 items-center">
                 <label className="text-sm text-gray-800">Email * </label>
-                {isValidEmail ? (
+                {isValidEmail && isValidEmail !== null ? null : (
                   <span className="text-[0.6rem] bg-red-500 text-white px-3 py-1 rounded-md">
                     Invalid Email
                   </span>
-                ) : null}
+                )}
               </div>
               <Input
                 type="email"
@@ -115,7 +113,7 @@ function UpdateVolunteer() {
                 onBlur={() => {
                   // Valida ao sair do campo
                   if (email.length > 0) {
-                    setIsValidEmail(!validateEmail(email));
+                    setIsValidEmail(validateEmail(email));
                   }
                 }}
               />
