@@ -27,8 +27,3 @@ export const filterVolunteers = (
 export const getAllPositions = (volunteers: Volunteer[]) => {
   return Array.from(new Set(volunteers.map((v) => v.cargo_pretendido)));
 };
-
-export const validateEmail = (value: string) => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(value);
-};

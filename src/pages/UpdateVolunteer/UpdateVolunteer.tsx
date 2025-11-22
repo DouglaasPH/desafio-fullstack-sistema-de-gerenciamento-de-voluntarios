@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useUpdateVolunteer } from "@/hooks/useUpdateVolunteer";
 import type { UpdateVolunteer } from "@/types/volunteers";
-import { validateEmail } from "@/utils/volunteer";
+import { validateEmail } from "@/utils/validators";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";

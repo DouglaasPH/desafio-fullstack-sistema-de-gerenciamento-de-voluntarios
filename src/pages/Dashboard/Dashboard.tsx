@@ -18,8 +18,10 @@ import { useListVolunteers } from "@/hooks/useListVolunteers";
 import { getAllPositions } from "@/utils/volunteer";
 import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [position, setPosition] = useState("Todos os cargos");
   const [status, setStatus] = useState("Todos os status");
@@ -57,7 +59,10 @@ function Dashboard() {
             Gerencie cadastros, visualize informações e acompanhe voluntários
           </p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-500  text-white flex flex-row items-center gap-4 cursor-pointer">
+        <Button
+          className="bg-blue-600 hover:bg-blue-500  text-white flex flex-row items-center gap-4 cursor-pointer"
+          onClick={() => navigate("/new-volunteer")}
+        >
           <Plus strokeWidth={3} className="size-4" />
           <span className="text-sm font-normal">Novo Voluntário</span>
         </Button>
