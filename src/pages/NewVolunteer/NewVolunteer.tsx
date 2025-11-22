@@ -1,4 +1,3 @@
-import ErrorPage from "@/components/ErrorPage/ErrorPage";
 import GlobalAlert from "@/components/global/GlobalAlert";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useCreateVolunteer } from "@/hooks/useCreateVolunteer";
 import type { CreateVolunteerData } from "@/types/volunteers";
+import renderError from "@/utils/errorHandler";
 import { formatTelefone, validateEmail, validateTelefone } from "@/utils/utils";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
@@ -67,13 +67,7 @@ function NewVolunteer() {
   };
 
   if (status === "pending") return <LoadingScreen />;
-  if (status === "error") {
-    // Código HTTP
-    const statusCode = error.response?.status || 500;
-    // Mensagem retornada pelo servidor
-    const message = error.response?.data?.message || error.message;
-    return <ErrorPage code={statusCode} message={message} />;
-  }
+  if (status === "error") renderError(error);
   if (status === "success") navigate("/");
 
   return (

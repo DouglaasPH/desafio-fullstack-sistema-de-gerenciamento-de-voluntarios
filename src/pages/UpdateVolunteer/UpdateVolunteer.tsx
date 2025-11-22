@@ -1,5 +1,4 @@
 import SelectField from "@/components/global/SelectField";
-import ErrorPage from "@/components/ErrorPage/ErrorPage";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,6 +11,7 @@ import { validateEmail } from "@/utils/utils";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import renderError from "@/utils/errorHandler";
 
 function UpdateVolunteer() {
   const { volunteer_id } = useParams();
@@ -78,13 +78,7 @@ function UpdateVolunteer() {
 
   if (status === "pending" || isLoading) return <LoadingScreen />;
   if (status === "error" || isError) {
-    // Se o erro veio do GET
-    const err = errorUpdateVolunteer ?? errorGetVolunteer;
-
-    const statusCode = err?.response?.status || 500;
-    const message = err?.response?.data?.detail;
-
-    return <ErrorPage code={statusCode} message={message} />;
+    renderError(errorUpdateVolunteer ?? errorGetVolunteer ?? undefined);
   }
   if (status === "success") navigate("/");
 

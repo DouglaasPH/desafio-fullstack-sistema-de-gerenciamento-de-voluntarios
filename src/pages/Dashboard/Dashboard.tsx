@@ -1,5 +1,4 @@
 import SelectField from "@/components/global/SelectField";
-import ErrorPage from "@/components/ErrorPage/ErrorPage";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,6 +11,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NoFound from "@/components/dashboard/NoFound";
 import VolunteersTable from "@/components/dashboard/VolunteersTable";
+import renderError from "@/utils/errorHandler";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -20,7 +20,12 @@ function Dashboard() {
   const [status, setStatus] = useState("Todos os status");
   const [availability, setAvailability] = useState("Todas as disponibilidades");
 
-  const { data: volunteers = [], isLoading, isError } = useListVolunteers();
+  const {
+    data: volunteers = [],
+    isLoading,
+    isError,
+    error,
+  } = useListVolunteers();
 
   const allPositions = useMemo(() => getAllPositions(volunteers), [volunteers]);
 
@@ -33,7 +38,7 @@ function Dashboard() {
   );
 
   if (isLoading) return <LoadingScreen />;
-  if (isError) return <ErrorPage code={500} message="Internal server error" />;
+  if (isError) renderError(error);
 
   return (
     <main className="w-full p-5 lg:p-10 flex flex-col gap-10">
