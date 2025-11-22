@@ -166,7 +166,10 @@ function UpdateVolunteer() {
             </div>
           </div>
           <div className="flex justify-end gap-5">
-            <Button className="bg-gray-100 hover:bg-gray-200 text-gray-900 cursor-pointer">
+            <Button
+              className="bg-gray-100 hover:bg-gray-200 text-gray-900 cursor-pointer"
+              onClick={() => navigate("/")}
+            >
               Cancelar
             </Button>
             <Button
