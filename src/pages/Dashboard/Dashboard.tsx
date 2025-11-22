@@ -1,24 +1,17 @@
 import SelectFilter from "@/components/dashboard/SelectFilter";
-import VolunteerRow from "@/components/dashboard/VolunteerRow";
 import ErrorPage from "@/components/ErrorPage/ErrorPage";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { useFilteredVolunteers } from "@/hooks/useFilteredVolunteers";
-import { useSoftDeleteVolunteers } from "@/hooks/useSoftDeleteVolunteers";
 import { useListVolunteers } from "@/hooks/useListVolunteers";
 import { getAllPositions } from "@/utils/volunteer";
 import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NoFound from "@/components/dashboard/NoFound";
+import VolunteersTable from "@/components/dashboard/VolunteersTable";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -38,12 +31,6 @@ function Dashboard() {
     position,
     availability
   );
-
-  const { mutate: softDelete } = useSoftDeleteVolunteers();
-
-  const handleDeleteVolunteer = (id: number) => {
-    softDelete(id); // chama a mutação
-  };
 
   if (isLoading) return <LoadingScreen />;
   if (isError) return <ErrorPage code={500} message="Internal server error" />;
@@ -95,44 +82,11 @@ function Dashboard() {
       </section>
       <section>
         <Card className="w-full">
-          <Table className="w-full">
-            <TableHeader className="w-full">
-              <TableRow className="w-full">
-                <TableHead className="text-sm font-regular text-gray-500 pl-10">
-                  Nome
-                </TableHead>
-                <TableHead className="text-sm font-regular text-gray-500 px-5">
-                  Email
-                </TableHead>
-                <TableHead className="text-sm font-regular text-gray-500 px-5">
-                  Telefone
-                </TableHead>
-                <TableHead className="text-sm font-regular text-gray-500 px-5">
-                  Cargo
-                </TableHead>
-                <TableHead className="text-sm font-regular text-gray-500 px-5">
-                  Disponibilidade
-                </TableHead>
-                <TableHead className="text-sm font-regular text-gray-500 px-5">
-                  Status
-                </TableHead>
-                <TableHead className="text-sm font-regular text-gray-500 px-5">
-                  Data de Inscrição
-                </TableHead>
-                <TableHead className="text-sm font-regular text-gray-500 text-end pr-10">
-                  Ações
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="text-sm font-regular text-gray-500">
-              {filteredVolunteers.map((volunteer) => (
-                <VolunteerRow
-                  volunteer={volunteer}
-                  onDelete={handleDeleteVolunteer}
-                />
-              ))}
-            </TableBody>
-          </Table>
+          {filteredVolunteers.length > 0 ? (
+            <VolunteersTable filteredVolunteers={filteredVolunteers} />
+          ) : (
+            <NoFound />
+          )}
         </Card>
       </section>
       <section>
