@@ -7,28 +7,22 @@ import type { AxiosError } from "axios";
 // types
 import type {
   ApiErrorResponse,
-  UpdateVolunteer,
+  CreateVolunteerData,
   Volunteer,
 } from "@/types/volunteers";
 
 // api
-import { updateVolunteer } from "@/api/volunteers";
+import { createVolunteer } from "@/api/volunteers";
 
-type UpdateVolunteerPayload = {
-  volunteer_id: number;
-  data: UpdateVolunteer;
-};
-
-export const useUpdateVolunteer = () => {
+export const useCreateVolunteer = () => {
   const queryClient = useQueryClient();
 
   return useMutation<
     Volunteer,
     AxiosError<ApiErrorResponse>,
-    { volunteer_id: number; data: UpdateVolunteer }
+    CreateVolunteerData
   >({
-    mutationFn: ({ volunteer_id, data }: UpdateVolunteerPayload) =>
-      updateVolunteer(volunteer_id, data),
+    mutationFn: (data: CreateVolunteerData) => createVolunteer(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["volunteers"] });
     },
