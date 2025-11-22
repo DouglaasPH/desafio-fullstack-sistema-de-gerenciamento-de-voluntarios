@@ -1,42 +1,70 @@
+import SelectField from "@/components/global/SelectField";
 import ErrorPage from "@/components/ErrorPage/ErrorPage";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import AlertComp from "@/components/updateVolunteer/Alert";
+import { useGetVolunteer } from "@/hooks/useGetVolunteer";
 import { useUpdateVolunteer } from "@/hooks/useUpdateVolunteer";
 import type { UpdateVolunteer } from "@/types/volunteers";
 import { validateEmail } from "@/utils/utils";
 import { ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 function UpdateVolunteer() {
-  const navigate = useNavigate();
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [isValidEmail, setIsValidEmail] = useState<null | true | false>(null);
-  const [cargoPretendido, setCargoPretendido] = useState("");
-  const [disponibilidade, setDisponibilidade] = useState("");
   const { volunteer_id } = useParams();
+  const {
+    data: volunteer,
+    isLoading,
+    isError,
+    error: errorGetVolunteer,
+  } = useGetVolunteer(Number(volunteer_id));
 
-  const { mutate: updateVolunteer, status, error } = useUpdateVolunteer();
+  const navigate = useNavigate();
+  const [nome, setNome] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [isValidEmail, setIsValidEmail] = useState<null | true | false>(null);
+  const [cargoPretendido, setCargoPretendido] = useState<string>("");
+  const [disponibilidade, setDisponibilidade] = useState<string>("");
+  const [viewAlert, setViewAlert] = useState(false);
+
+  useEffect(() => {
+    if (!volunteer) return;
+
+    const syncForm = () => {
+      setNome(volunteer.nome);
+      setEmail(volunteer.email);
+      setCargoPretendido(volunteer.cargo_pretendido);
+      setDisponibilidade(volunteer.disponibilidade);
+      setIsValidEmail(true);
+    };
+
+    syncForm();
+  }, [volunteer]);
+
+  const {
+    mutate: updateVolunteer,
+    status,
+    error: errorUpdateVolunteer,
+  } = useUpdateVolunteer();
 
   const handleUpdateVolunteer = () => {
     if (
-      nome == "" &&
-      cargoPretendido == "" &&
-      disponibilidade == "" &&
-      isValidEmail !== true
-    )
+      (nome == "" || nome === volunteer?.nome) &&
+      (cargoPretendido == "" ||
+        cargoPretendido === volunteer?.cargo_pretendido) &&
+      (disponibilidade == "" ||
+        disponibilidade === volunteer?.disponibilidade) &&
+      (isValidEmail !== true || email === volunteer?.email)
+    ) {
+      setViewAlert(true);
+      setTimeout(() => {
+        setViewAlert(false);
+      }, 5000);
       return;
+    }
 
     const data: UpdateVolunteer = {};
 
@@ -45,22 +73,28 @@ function UpdateVolunteer() {
     if (disponibilidade.length > 0) data.disponibilidade = disponibilidade;
     if (isValidEmail) data.email = email;
 
-    const id = Number(volunteer_id);
-    updateVolunteer({ volunteer_id: id, data });
+    updateVolunteer({ volunteer_id: Number(volunteer?.id), data });
   };
 
-  if (status === "pending") return <LoadingScreen />;
-  if (status === "error") {
-    // Código HTTP
-    const statusCode = error.response?.status || 500;
-    // Mensagem retornada pelo servidor
-    const message = error.response?.data?.message || error.message;
+  if (status === "pending" || isLoading) return <LoadingScreen />;
+  if (status === "error" || isError) {
+    // Se o erro veio do GET
+    const err = errorUpdateVolunteer ?? errorGetVolunteer;
+
+    const statusCode = err?.response?.status || 500;
+    const message = err?.response?.data?.detail;
+
     return <ErrorPage code={statusCode} message={message} />;
   }
   if (status === "success") navigate("/");
 
   return (
     <main className="w-full flex flex-col p-10 gap-8">
+      {viewAlert ? (
+        <div className="absolute w-full flex justify-center top-10 transition-all duration-300  -translate-y-5 opacity-0 animate-[slideDown_0.3s_ease_forwards]">
+          <AlertComp />
+        </div>
+      ) : null}
       <section className="">
         <button
           className="flex flex-row gap-5 text-sm items-center text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-xl cursor-pointer"
@@ -96,7 +130,7 @@ function UpdateVolunteer() {
                 <label className="text-sm text-gray-800">Email * </label>
                 {isValidEmail && isValidEmail !== null ? null : (
                   <span className="text-[0.6rem] bg-red-500 text-white px-3 py-1 rounded-md">
-                    Invalid Email
+                    Email inválido
                   </span>
                 )}
               </div>
@@ -122,45 +156,25 @@ function UpdateVolunteer() {
               <label className="text-sm text-gray-800">
                 Cargo Pretendido *
               </label>
-              <Select
+              <SelectField
                 value={cargoPretendido}
-                onValueChange={setCargoPretendido}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue>{cargoPretendido}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="Product Owner Jr">
-                      Product Owner Jr
-                    </SelectItem>
-                    <SelectItem value="UI/UX Designer Jr">
-                      UI/UX Designer Jr
-                    </SelectItem>
-                    <SelectItem value="Frontend Jr">Frontend Jr</SelectItem>
-                    <SelectItem value="Backend Jr">Backend Jr</SelectItem>
-                    <SelectItem value="Full Stack Jr">Full Stack Jr</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                onChange={setCargoPretendido}
+                options={[
+                  "Product Owner Jr",
+                  "UI/UX Designer Jr",
+                  "Frontend Jr",
+                  "Backend Jr",
+                  "Full Stack Jr",
+                ]}
+              />
             </div>
             <div className="w-full flex flex-col gap-1">
               <label className="text-sm text-gray-800">Disponibildiade *</label>
-              <Select
+              <SelectField
                 value={disponibilidade}
-                onValueChange={setDisponibilidade}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue>{disponibilidade}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="Manhã">Manhã</SelectItem>
-                    <SelectItem value="Tarde">Tarde</SelectItem>
-                    <SelectItem value="Noite">Noite</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                onChange={setDisponibilidade}
+                options={["Manhã", "Tarde", "Noite"]}
+              />
             </div>
           </div>
           <div className="flex justify-end gap-5">

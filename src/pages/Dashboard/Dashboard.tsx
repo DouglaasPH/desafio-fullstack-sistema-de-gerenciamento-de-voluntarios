@@ -1,4 +1,4 @@
-import SelectFilter from "@/components/dashboard/SelectFilter";
+import SelectField from "@/components/global/SelectField";
 import ErrorPage from "@/components/ErrorPage/ErrorPage";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { Button } from "@/components/ui/button";
@@ -63,17 +63,17 @@ function Dashboard() {
             className="w-full lg:w-auto placeholder:text-gray-300"
           />
 
-          <SelectFilter
+          <SelectField
             value={status}
             onChange={setStatus}
             options={["Todos os status", "Ativo", "Inativo"]}
           />
-          <SelectFilter
+          <SelectField
             value={position}
             onChange={setPosition}
             options={["Todos os cargos", ...allPositions]}
           />
-          <SelectFilter
+          <SelectField
             value={availability}
             onChange={setAvailability}
             options={["Todas as disponibilidades", "Manhã", "Tarde", "Noite"]}

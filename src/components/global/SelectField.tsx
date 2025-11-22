@@ -13,7 +13,7 @@ interface SelectFilterProps {
   options: string[];
 }
 
-function SelectFilter({ value, onChange, options }: SelectFilterProps) {
+function SelectField({ value, onChange, options }: SelectFilterProps) {
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger className="w-full lg:w-auto">
@@ -32,4 +32,4 @@ function SelectFilter({ value, onChange, options }: SelectFilterProps) {
   );
 }
 
-export default SelectFilter;
+export default SelectField;
