@@ -11,7 +11,9 @@ export function GlobalAlert({ title, description }: Props) {
   return (
     <Alert variant="destructive" className="w-md">
       <AlertCircleIcon />
-      <AlertTitle>{title}</AlertTitle>
+      <AlertTitle>
+        <span>{title}</span>
+      </AlertTitle>
       <AlertDescription>
         <p>{description}</p>
       </AlertDescription>

@@ -23,8 +23,8 @@ function NewVolunteer() {
   const navigate = useNavigate();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [cargoPretendido, setCargoPretendido] = useState("");
-  const [disponibilidade, setDisponibilidade] = useState("");
+  const [cargoPretendido, setCargoPretendido] = useState("Full Stack Jr");
+  const [disponibilidade, setDisponibilidade] = useState("Tarde");
   const [telefone, setTelefone] = useState("");
   const [isValidEmail, setIsValidEmail] = useState<null | true | false>(null);
   const [isValidTelefone, setIsValidTelefone] = useState<null | true | false>(
@@ -76,6 +76,8 @@ function NewVolunteer() {
   };
 
   useEffect(() => {
+    if (status === "idle") return; // ignora montagem
+
     if (
       status === "error" &&
       error &&
@@ -270,7 +272,7 @@ function NewVolunteer() {
               className="bg-blue-600 hover:bg-blue-500 cursor-pointer"
               onClick={handleCreateVolunteer}
             >
-              Cadastar Voluntário
+              Cadastrar Voluntário
             </Button>
           </div>
         </Card>

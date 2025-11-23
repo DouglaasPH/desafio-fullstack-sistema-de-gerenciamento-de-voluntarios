@@ -64,6 +64,7 @@ function VolunteersTable({ filteredVolunteers }: Props) {
       <TableBody className="text-sm font-regular text-gray-500">
         {filteredVolunteers.map((volunteer) => (
           <VolunteerRow
+            key={volunteer.id}
             volunteer={volunteer}
             onDelete={handleDeleteVolunteer}
           />

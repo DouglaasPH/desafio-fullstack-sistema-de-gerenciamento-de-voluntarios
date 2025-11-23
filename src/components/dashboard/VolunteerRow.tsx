@@ -14,7 +14,7 @@ function VolunteerRow({
   const navigate = useNavigate();
 
   return (
-    <TableRow key={volunteer.id}>
+    <TableRow>
       <TableCell className="pl-10 text-gray-700 inter font-medium">
         {volunteer.nome}
       </TableCell>
@@ -49,7 +49,6 @@ function VolunteerRow({
               <button
                 className="cursor-pointer"
                 onClick={() => onDelete(volunteer.id)}
-                data-testid={`soft-delete-${volunteer.id}`}
               >
                 <CircleX
                   strokeWidth={2.5}
