@@ -49,6 +49,7 @@ function VolunteerRow({
               <button
                 className="cursor-pointer"
                 onClick={() => onDelete(volunteer.id)}
+                data-testid={`soft-delete-${volunteer.id}`}
               >
                 <CircleX
                   strokeWidth={2.5}
