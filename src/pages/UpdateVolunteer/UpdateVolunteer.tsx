@@ -1,20 +1,29 @@
-import SelectField from "@/components/global/SelectField";
-import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
+// react
+
+import { useNavigate, useParams } from "react-router-dom";
+// shadcn
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import GlobalAlert from "@/components/global/GlobalAlert";
-import { useGetVolunteer } from "@/hooks/useGetVolunteer";
-import { useUpdateVolunteer } from "@/hooks/useUpdateVolunteer";
-import type { UpdateVolunteer } from "@/types/volunteers";
-import { validateEmail } from "@/utils/utils";
+
+// lucide
 import { ArrowLeft } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+
+// components
+import SelectField from "@/components/global/SelectField";
+import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
+import GlobalAlert from "@/components/global/GlobalAlert";
+
+// hooks
+import { useUpdateVolunteerForm } from "@/hooks/useUpdateVolunteerForm";
+import { useGetVolunteer } from "@/hooks/useGetVolunteer";
+
+// utils
 import renderError from "@/utils/errorHandler";
 
 function UpdateVolunteerPage() {
   const { volunteer_id } = useParams();
+
   const {
     data: volunteer,
     isLoading,
@@ -22,86 +31,34 @@ function UpdateVolunteerPage() {
     error: errorGetVolunteer,
   } = useGetVolunteer(Number(volunteer_id));
 
-  const navigate = useNavigate();
-  const [nome, setNome] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [isValidEmail, setIsValidEmail] = useState<null | true | false>(null);
-  const [cargoPretendido, setCargoPretendido] = useState<string>("");
-  const [disponibilidade, setDisponibilidade] = useState<string>("");
-  const [viewAlert, setViewAlert] = useState(false);
-
-  useEffect(() => {
-    if (!volunteer) return;
-
-    const syncForm = () => {
-      setNome(volunteer.nome);
-      setEmail(volunteer.email);
-      setCargoPretendido(volunteer.cargo_pretendido);
-      setDisponibilidade(volunteer.disponibilidade);
-      setIsValidEmail(true);
-    };
-
-    syncForm();
-  }, [volunteer]);
-
   const {
-    mutate: updateVolunteer,
+    form,
     status,
-    error: errorUpdateVolunteer,
-  } = useUpdateVolunteer();
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isSubmitting,
+    errorUpdate,
+    alert,
+  } = useUpdateVolunteerForm(volunteer);
 
-  const handleUpdateVolunteer = () => {
-    if (
-      (nome == "" || nome === volunteer?.nome) &&
-      (cargoPretendido == "" ||
-        cargoPretendido === volunteer?.cargo_pretendido) &&
-      (disponibilidade == "" ||
-        disponibilidade === volunteer?.disponibilidade) &&
-      (isValidEmail !== true || email === volunteer?.email)
-    ) {
-      setViewAlert(true);
-      setTimeout(() => {
-        setViewAlert(false);
-      }, 5000);
-      return;
-    }
+  const navigate = useNavigate();
 
-    const data: UpdateVolunteer = {};
-
-    if (nome.length > 0 && nome !== volunteer?.nome) data.nome = nome;
-    if (
-      cargoPretendido.length > 0 &&
-      cargoPretendido !== volunteer?.cargo_pretendido
-    )
-      data.cargo_pretendido = cargoPretendido;
-    if (
-      disponibilidade.length > 0 &&
-      disponibilidade !== volunteer?.disponibilidade
-    )
-      data.disponibilidade = disponibilidade;
-    if (isValidEmail && email !== volunteer?.email) data.email = email;
-
-    updateVolunteer({ volunteer_id: Number(volunteer?.id), data });
-  };
-
-  if (status === "pending" || isLoading) return <LoadingScreen />;
+  if (isSubmitting || isLoading) return <LoadingScreen />;
   if (status === "error" || isError)
-    return renderError(errorUpdateVolunteer ?? errorGetVolunteer ?? undefined);
+    return renderError(errorUpdate ?? errorGetVolunteer ?? undefined);
   if (status === "success") navigate("/");
 
   return (
     <main className="w-full flex flex-col p-10 gap-8">
-      {viewAlert ? (
+      {alert && (
         <div className="absolute w-full flex justify-center top-10 transition-all duration-300  -translate-y-5 opacity-0 animate-[slideDown_0.3s_ease_forwards]">
-          <GlobalAlert
-            title={"Não foi possível atualizar voluntário."}
-            description={
-              "Para atualizar voluntário é necessário alterar corretamente ao menos um dos campos abaixo."
-            }
-          />
+          <GlobalAlert title={alert.title} description={alert.description} />
         </div>
-      ) : null}
-      <section className="">
+      )}
+
+      <section>
         <button
           className="flex flex-row gap-5 text-sm items-center text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-xl cursor-pointer"
           onClick={() => navigate("/")}
@@ -127,14 +84,14 @@ function UpdateVolunteerPage() {
               <Input
                 placeholder="Nome completo"
                 className="placeholder:text-gray-400"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
+                value={form.nome}
+                onChange={(e) => handleChange("nome", e.target.value)}
               />
             </div>
             <div className="w-full flex flex-col gap-1">
               <div className="flex gap-5 items-center">
                 <label className="text-sm text-gray-800">Email * </label>
-                {isValidEmail && isValidEmail !== null ? null : (
+                {errors.email && (
                   <span className="text-[0.6rem] bg-red-500 text-white px-3 py-1 rounded-md">
                     Email inválido
                   </span>
@@ -144,18 +101,9 @@ function UpdateVolunteerPage() {
                 type="email"
                 placeholder="email@example.com"
                 className="placeholder:text-gray-400"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  // Reset do estado de validação enquanto digita
-                  setIsValidEmail(null);
-                }}
-                onBlur={() => {
-                  // Valida ao sair do campo
-                  if (email.length > 0) {
-                    setIsValidEmail(validateEmail(email));
-                  }
-                }}
+                value={form.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                onBlur={(e) => handleBlur(e.target.value)}
               />
             </div>
             <div className="w-full flex flex-col gap-1">
@@ -163,8 +111,8 @@ function UpdateVolunteerPage() {
                 Cargo Pretendido *
               </label>
               <SelectField
-                value={cargoPretendido}
-                onChange={setCargoPretendido}
+                value={form.cargo_pretendido}
+                onChange={(option) => handleChange("cargo_pretendido", option)}
                 options={[
                   "Product Owner Jr",
                   "UI/UX Designer Jr",
@@ -177,8 +125,8 @@ function UpdateVolunteerPage() {
             <div className="w-full flex flex-col gap-1">
               <label className="text-sm text-gray-800">Disponibildiade *</label>
               <SelectField
-                value={disponibilidade}
-                onChange={setDisponibilidade}
+                value={form.disponibilidade}
+                onChange={(option) => handleChange("disponibilidade", option)}
                 options={["Manhã", "Tarde", "Noite"]}
               />
             </div>
@@ -192,7 +140,7 @@ function UpdateVolunteerPage() {
             </Button>
             <Button
               className="bg-blue-600 hover:bg-blue-500 cursor-pointer"
-              onClick={() => handleUpdateVolunteer()}
+              onClick={() => handleSubmit()}
             >
               Atualizar Voluntário
             </Button>
