@@ -47,6 +47,7 @@ function VolunteerRow({
                 <Pencil strokeWidth={2.5} size={18} className="text-gray-600" />
               </button>
               <button
+                data-testid={`soft-delete-${volunteer.id}`}
                 className="cursor-pointer"
                 onClick={() => onDelete(volunteer.id)}
               >

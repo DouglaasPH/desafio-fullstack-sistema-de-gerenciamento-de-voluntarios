@@ -9,7 +9,7 @@ import {
 // routes
 import Dashboard from "./pages/Dashboard/Dashboard";
 import NewVolunteer from "./pages/NewVolunteer/NewVolunteer";
-import UpdateVolunteer from "./pages/UpdateVolunteer/UpdateVolunteer";
+import UpdateVolunteerPage from "./pages/UpdateVolunteer/UpdateVolunteer";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -18,7 +18,7 @@ const routes = createBrowserRouter(
       <Route path="new-volunteer" element={<NewVolunteer />} />
       <Route
         path="update-volunteer/:volunteer_id"
-        element={<UpdateVolunteer />}
+        element={<UpdateVolunteerPage />}
       />
     </Route>
   )

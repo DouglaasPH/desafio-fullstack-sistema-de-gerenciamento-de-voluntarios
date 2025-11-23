@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import renderError from "@/utils/errorHandler";
 
-function UpdateVolunteer() {
+function UpdateVolunteerPage() {
   const { volunteer_id } = useParams();
   const {
     data: volunteer,
@@ -68,10 +68,18 @@ function UpdateVolunteer() {
 
     const data: UpdateVolunteer = {};
 
-    if (nome.length > 0) data.nome = nome;
-    if (cargoPretendido.length > 0) data.cargo_pretendido = cargoPretendido;
-    if (disponibilidade.length > 0) data.disponibilidade = disponibilidade;
-    if (isValidEmail) data.email = email;
+    if (nome.length > 0 && nome !== volunteer?.nome) data.nome = nome;
+    if (
+      cargoPretendido.length > 0 &&
+      cargoPretendido !== volunteer?.cargo_pretendido
+    )
+      data.cargo_pretendido = cargoPretendido;
+    if (
+      disponibilidade.length > 0 &&
+      disponibilidade !== volunteer?.disponibilidade
+    )
+      data.disponibilidade = disponibilidade;
+    if (isValidEmail && email !== volunteer?.email) data.email = email;
 
     updateVolunteer({ volunteer_id: Number(volunteer?.id), data });
   };
@@ -195,4 +203,4 @@ function UpdateVolunteer() {
   );
 }
 
-export default UpdateVolunteer;
+export default UpdateVolunteerPage;
