@@ -1,10 +1,19 @@
-import type { Volunteer } from "@/types/volunteers";
-import { TableCell, TableRow } from "../ui/table";
-import { CircleX, Pencil } from "lucide-react";
+// react
 import { useNavigate } from "react-router-dom";
+
+// shadcn
+import { TableCell, TableRow } from "../ui/table";
+
+// lucide
+import { CircleX, Pencil } from "lucide-react";
+
+// utils
 import { formatData } from "@/utils/utils";
 
-function VolunteerRow({
+// types
+import type { Volunteer } from "@/types/volunteers";
+
+function DashboardTableRow({
   volunteer,
   onDelete,
 }: {
@@ -72,4 +81,4 @@ function VolunteerRow({
   );
 }
 
-export default VolunteerRow;
+export default DashboardTableRow;

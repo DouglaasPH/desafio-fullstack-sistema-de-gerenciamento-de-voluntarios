@@ -1,44 +1,63 @@
-import SelectField from "@/components/global/SelectField";
-import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
+// react
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+// shadcn
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+
+// lucide
+import { Plus } from "lucide-react";
+
+// components
+import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
+import DashboardTable from "@/components/dashboard/DashboardTable";
+import DashboardFilter from "@/components/dashboard/DashboardFilter";
+
+// hooks
 import { useFilteredVolunteers } from "@/hooks/useFilteredVolunteers";
 import { useListVolunteers } from "@/hooks/useListVolunteers";
-import { getAllPositions } from "@/utils/volunteer";
-import { Plus } from "lucide-react";
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import NoFound from "@/components/dashboard/NoFound";
-import VolunteersTable from "@/components/dashboard/VolunteersTable";
+import { useSoftDeleteVolunteers } from "@/hooks/useSoftDeleteVolunteers";
+
+// utils
 import renderError from "@/utils/errorHandler";
 
+// types
+import type { Filters } from "@/types/volunteers";
+
 function Dashboard() {
+  const [filters, setFilters] = useState<Filters>({
+    search: "",
+    position: "Todos os cargos",
+    status: "Todos os status",
+    availability: "Todas as disponibilidades",
+  });
+
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
-  const [position, setPosition] = useState("Todos os cargos");
-  const [status, setStatus] = useState("Todos os status");
-  const [availability, setAvailability] = useState("Todas as disponibilidades");
+
+  const {
+    mutate: softDelete,
+    status: softDeleteStatus,
+    error: softDeleteError,
+  } = useSoftDeleteVolunteers();
 
   const {
     data: volunteers = [],
     isLoading,
     isError,
-    error,
+    error: listVolunteersError,
   } = useListVolunteers();
-
-  const allPositions = useMemo(() => getAllPositions(volunteers), [volunteers]);
 
   const filteredVolunteers = useFilteredVolunteers(
     volunteers,
-    search,
-    status,
-    position,
-    availability
+    filters.search,
+    filters.status,
+    filters.position,
+    filters.availability
   );
 
-  if (isLoading) return <LoadingScreen />;
-  if (isError) return renderError(error);
+  if (isLoading || softDeleteStatus == "pending") return <LoadingScreen />;
+  if (isError || softDeleteStatus === "error")
+    return renderError(listVolunteersError ?? softDeleteError ?? undefined);
 
   return (
     <main className="w-full p-5 lg:p-10 flex flex-col gap-10">
@@ -59,41 +78,18 @@ function Dashboard() {
           <span className="text-sm font-normal">Novo Voluntário</span>
         </Button>
       </section>
-      <section>
-        <Card className="w-full h-full px-7 grid grid-cols-1 lg:grid-cols-4">
-          <Input
-            placeholder="Buscar por nome ou email"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full lg:w-auto placeholder:text-gray-300"
-          />
 
-          <SelectField
-            value={status}
-            onChange={setStatus}
-            options={["Todos os status", "Ativo", "Inativo"]}
-          />
-          <SelectField
-            value={position}
-            onChange={setPosition}
-            options={["Todos os cargos", ...allPositions]}
-          />
-          <SelectField
-            value={availability}
-            onChange={setAvailability}
-            options={["Todas as disponibilidades", "Manhã", "Tarde", "Noite"]}
-          />
-        </Card>
-      </section>
-      <section>
-        <Card className="w-full">
-          {filteredVolunteers.length > 0 ? (
-            <VolunteersTable filteredVolunteers={filteredVolunteers} />
-          ) : (
-            <NoFound />
-          )}
-        </Card>
-      </section>
+      <DashboardFilter
+        filters={filters}
+        setFilters={setFilters}
+        volunteers={volunteers}
+      />
+
+      <DashboardTable
+        filteredVolunteers={filteredVolunteers}
+        softDelete={softDelete}
+      />
+
       <section>
         <p>
           Mostrando {filteredVolunteers.length} de {volunteers.length}{" "}

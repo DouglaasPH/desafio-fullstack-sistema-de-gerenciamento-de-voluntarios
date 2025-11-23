@@ -44,3 +44,10 @@ export type ApiErrorResponse = {
   statusCode?: number;
   detail?: string;
 };
+
+export interface Filters {
+  search: string;
+  position: string;
+  status: string;
+  availability: string;
+}
