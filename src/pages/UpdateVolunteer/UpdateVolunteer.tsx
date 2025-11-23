@@ -77,9 +77,8 @@ function UpdateVolunteer() {
   };
 
   if (status === "pending" || isLoading) return <LoadingScreen />;
-  if (status === "error" || isError) {
-    renderError(errorUpdateVolunteer ?? errorGetVolunteer ?? undefined);
-  }
+  if (status === "error" || isError)
+    return renderError(errorUpdateVolunteer ?? errorGetVolunteer ?? undefined);
   if (status === "success") navigate("/");
 
   return (

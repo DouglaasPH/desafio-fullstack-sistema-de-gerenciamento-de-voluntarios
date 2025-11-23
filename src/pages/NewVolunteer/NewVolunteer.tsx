@@ -16,7 +16,7 @@ import type { CreateVolunteerData } from "@/types/volunteers";
 import renderError from "@/utils/errorHandler";
 import { formatTelefone, validateEmail, validateTelefone } from "@/utils/utils";
 import { ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function NewVolunteer() {
@@ -31,6 +31,11 @@ function NewVolunteer() {
     null
   );
   const [viewAlert, setViewAlert] = useState(false);
+  const [contentAlert, setContentAlert] = useState({
+    title: "",
+    description: "",
+  });
+  const [showError, setShowError] = useState(false);
 
   const { mutate: createVolunteer, status, error } = useCreateVolunteer();
 
@@ -43,6 +48,11 @@ function NewVolunteer() {
       isValidTelefone !== true
     ) {
       setViewAlert(true);
+      setContentAlert({
+        title: "Não foi possível cadastrar voluntário.",
+        description:
+          "Para cadastrar voluntário é necessário preencher corretamente todos campos abaixo.",
+      });
       setTimeout(() => {
         setViewAlert(false);
       }, 5000);
@@ -62,23 +72,57 @@ function NewVolunteer() {
     if (disponibilidade.length > 0) data.disponibilidade = disponibilidade;
     if (isValidTelefone) data.telefone = telefone;
     if (isValidEmail) data.email = email;
-
     createVolunteer(data);
   };
 
+  useEffect(() => {
+    if (
+      status === "error" &&
+      error &&
+      error.response?.status === 409 &&
+      error.response?.data?.detail ===
+        "O email pertence a um voluntário cadastrado."
+    ) {
+      // adiando o setState para o próximo tick
+      const timer = setTimeout(() => {
+        setViewAlert(true);
+        setContentAlert({
+          title: "Não foi possível cadastrar voluntário.",
+          description:
+            "O email inserido pertence a um voluntário. Por favor, tente outro.",
+        });
+
+        // esconde após 5s
+        const hideTimer = setTimeout(() => setViewAlert(false), 5000);
+
+        // limpa hideTimer se o componente desmontar
+        return () => clearTimeout(hideTimer);
+      }, 0);
+
+      // limpa timer se o componente desmontar antes de setar o state
+      return () => clearTimeout(timer);
+    } else {
+      const timer = setTimeout(() => {
+        setShowError(true);
+      }, 0);
+
+      return () => clearTimeout(timer);
+    }
+  }, [status, error]);
+
   if (status === "pending") return <LoadingScreen />;
-  if (status === "error") renderError(error);
   if (status === "success") navigate("/");
+  if (showError) {
+    return renderError(error ?? undefined);
+  }
 
   return (
     <main className="w-full flex flex-col p-10 gap-8">
       {viewAlert ? (
         <div className="absolute w-full flex justify-center top-10 transition-all duration-300  -translate-y-5 opacity-0 animate-[slideDown_0.3s_ease_forwards]">
           <GlobalAlert
-            title={"Não foi possível cadastrar voluntário."}
-            description={
-              "Para cadastrar voluntário é necessário preencher corretamente todos campos abaixo."
-            }
+            title={contentAlert.title}
+            description={contentAlert.description}
           />
         </div>
       ) : null}

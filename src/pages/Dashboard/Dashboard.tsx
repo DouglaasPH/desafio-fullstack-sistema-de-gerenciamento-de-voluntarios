@@ -38,7 +38,7 @@ function Dashboard() {
   );
 
   if (isLoading) return <LoadingScreen />;
-  if (isError) renderError(error);
+  if (isError) return renderError(error);
 
   return (
     <main className="w-full p-5 lg:p-10 flex flex-col gap-10">

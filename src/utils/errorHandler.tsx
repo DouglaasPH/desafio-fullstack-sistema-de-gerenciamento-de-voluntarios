@@ -3,6 +3,7 @@ import type { AxiosError } from "axios";
 import type { ApiErrorResponse } from "@/types/volunteers";
 
 function renderError(error?: AxiosError<ApiErrorResponse>) {
+  console.log(error);
   if (!error) return null;
 
   const statusCode = error.response?.status || 500;
@@ -10,6 +11,7 @@ function renderError(error?: AxiosError<ApiErrorResponse>) {
     error.response?.data?.detail ||
     "Erro inesperado. Tente novamente mais tarde.";
 
+  console.log(statusCode, message);
   return <ErrorPage code={statusCode} message={message} />;
 }
 
