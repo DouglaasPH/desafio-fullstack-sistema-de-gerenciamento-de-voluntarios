@@ -51,7 +51,7 @@ function DashboardTableRow({
             <>
               <button
                 className="cursor-pointer"
-                onClick={() => navigate(`/update-volunteer/${volunteer.id}`)}
+                onClick={() => navigate(`/atualizar/${volunteer.id}`)}
               >
                 <Pencil strokeWidth={2.5} size={18} className="text-gray-600" />
               </button>
@@ -70,7 +70,7 @@ function DashboardTableRow({
           ) : (
             <button
               className="cursor-pointer"
-              onClick={() => navigate(`/update-volunteer/${volunteer.id}`)}
+              onClick={() => navigate(`/atualizar/${volunteer.id}`)}
             >
               <Pencil strokeWidth={2.5} size={18} className="text-gray-600" />
             </button>

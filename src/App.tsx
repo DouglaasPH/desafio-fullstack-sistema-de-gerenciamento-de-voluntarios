@@ -15,11 +15,8 @@ const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
       <Route index element={<Dashboard />} />
-      <Route path="new-volunteer" element={<NewVolunteer />} />
-      <Route
-        path="update-volunteer/:volunteer_id"
-        element={<UpdateVolunteerPage />}
-      />
+      <Route path="novo" element={<NewVolunteer />} />
+      <Route path="atualizar/:volunteer_id" element={<UpdateVolunteerPage />} />
     </Route>
   )
 );

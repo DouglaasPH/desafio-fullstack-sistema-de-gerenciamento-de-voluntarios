@@ -72,7 +72,7 @@ function Dashboard() {
         </div>
         <Button
           className="bg-blue-600 hover:bg-blue-500  text-white flex flex-row items-center gap-4 cursor-pointer"
-          onClick={() => navigate("/new-volunteer")}
+          onClick={() => navigate("/novo")}
         >
           <Plus strokeWidth={3} className="size-4" />
           <span className="text-sm font-normal">Novo Voluntário</span>
