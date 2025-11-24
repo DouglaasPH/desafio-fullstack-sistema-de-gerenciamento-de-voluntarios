@@ -1,5 +1,10 @@
-import ErrorPage from "@/components/ErrorPage/ErrorPage";
+// axios
 import type { AxiosError } from "axios";
+
+// components
+import ErrorPage from "@/components/ErrorPage/ErrorPage";
+
+// types
 import type { ApiErrorResponse } from "@/types/volunteers";
 
 function renderError(error?: AxiosError<ApiErrorResponse>) {

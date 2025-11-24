@@ -1,6 +1,8 @@
-import { AlertCircleIcon } from "lucide-react";
-
+// shadcn
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+// lucide
+import { AlertCircleIcon } from "lucide-react";
 
 interface Props {
   title: string;

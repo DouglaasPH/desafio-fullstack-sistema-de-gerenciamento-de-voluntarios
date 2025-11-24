@@ -1,3 +1,4 @@
+// types
 import type { Volunteer } from "@/types/volunteers";
 
 export const filterVolunteers = (

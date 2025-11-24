@@ -1,6 +1,13 @@
+// react
 import { useEffect, useState } from "react";
+
+// hooks
 import { useUpdateVolunteer } from "@/hooks/useUpdateVolunteer";
+
+// utils
 import { validateEmail } from "@/utils/utils";
+
+// types
 import type { UpdateVolunteer, Volunteer } from "@/types/volunteers";
 
 interface Alert {

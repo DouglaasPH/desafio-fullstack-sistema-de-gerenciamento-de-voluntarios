@@ -48,10 +48,11 @@ function NewVolunteer() {
         title: "Não foi possível cadastrar voluntário.",
         description: "O email digitado está vinculado a um voluntário.",
       });
+      console.log("fdlkjfaldk");
 
       const timer = setTimeout(() => {
         setAlert(null);
-      }, 3000);
+      }, 4000);
 
       return () => clearTimeout(timer);
     }
@@ -59,10 +60,7 @@ function NewVolunteer() {
 
   if (isSubmitting) return <LoadingScreen />;
 
-  if (status === "error") {
-    if (errorCreate?.response?.status === 409) {
-      return null; // a tela continua e apenas o alerta aparece
-    }
+  if (status === "error" && errorCreate?.response?.status !== 409) {
     return renderError(errorCreate ?? undefined);
   }
 
