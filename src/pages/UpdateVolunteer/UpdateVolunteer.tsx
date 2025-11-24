@@ -106,30 +106,26 @@ function UpdateVolunteerPage() {
                 onBlur={(e) => handleBlur(e.target.value)}
               />
             </div>
-            <div className="w-full flex flex-col gap-1">
-              <label className="text-sm text-gray-800">
-                Cargo Pretendido *
-              </label>
-              <SelectField
-                value={form.cargo_pretendido}
-                onChange={(option) => handleChange("cargo_pretendido", option)}
-                options={[
-                  "Product Owner Jr",
-                  "UI/UX Designer Jr",
-                  "Frontend Jr",
-                  "Backend Jr",
-                  "Full Stack Jr",
-                ]}
-              />
-            </div>
-            <div className="w-full flex flex-col gap-1">
-              <label className="text-sm text-gray-800">Disponibildiade *</label>
-              <SelectField
-                value={form.disponibilidade}
-                onChange={(option) => handleChange("disponibilidade", option)}
-                options={["Manhã", "Tarde", "Noite"]}
-              />
-            </div>
+
+            <SelectField
+              label="Cargo Pretendido *"
+              value={form.cargo_pretendido}
+              onChange={(option) => handleChange("cargo_pretendido", option)}
+              options={[
+                "Product Owner Jr",
+                "UI/UX Designer Jr",
+                "Frontend Jr",
+                "Backend Jr",
+                "Full Stack Jr",
+              ]}
+            />
+
+            <SelectField
+              label="Disponibilidade *"
+              value={form.disponibilidade}
+              onChange={(option) => handleChange("disponibilidade", option)}
+              options={["Manhã", "Tarde", "Noite"]}
+            />
           </div>
           <div className="flex justify-end gap-5">
             <Button
