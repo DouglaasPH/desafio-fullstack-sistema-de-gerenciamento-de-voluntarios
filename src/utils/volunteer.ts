@@ -23,7 +23,3 @@ export const filterVolunteers = (
     );
   });
 };
-
-export const getAllPositions = (volunteers: Volunteer[]) => {
-  return Array.from(new Set(volunteers.map((v) => v.cargo_pretendido)));
-};

@@ -1,5 +1,5 @@
 // react
-import { useMemo, type Dispatch, type SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 
 // shadcn
 import { Card } from "../ui/card";
@@ -8,21 +8,18 @@ import { Input } from "../ui/input";
 // components
 import SelectField from "../global/SelectField";
 
-// utils
-import { getAllPositions } from "@/utils/volunteer";
-
 // types
-import type { Filters, Volunteer } from "@/types/volunteers";
+import type { Filters } from "@/types/volunteers";
+
+// constants
+import { CARGOS, DISPONIBILIDADES, STATUS } from "@/constants/volunteer";
 
 interface Props {
-  volunteers: Volunteer[];
   setFilters: Dispatch<SetStateAction<Filters>>;
   filters: Filters;
 }
 
-function DashboardFilter({ volunteers, filters, setFilters }: Props) {
-  const allPositions = useMemo(() => getAllPositions(volunteers), [volunteers]);
-
+function DashboardFilter({ filters, setFilters }: Props) {
   const updateFilter = (key: keyof Filters, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
@@ -38,19 +35,22 @@ function DashboardFilter({ volunteers, filters, setFilters }: Props) {
         />
 
         <SelectField
+          label=""
           value={filters.status}
           onChange={(v) => updateFilter("status", v)}
-          options={["Todos os status", "Ativo", "Inativo"]}
+          options={["Todos os status", ...STATUS]}
         />
         <SelectField
+          label=""
           value={filters.position}
           onChange={(v) => updateFilter("position", v)}
-          options={["Todos os cargos", ...allPositions]}
+          options={["Todos os cargos", ...CARGOS]}
         />
         <SelectField
+          label=""
           value={filters.availability}
           onChange={(v) => updateFilter("availability", v)}
-          options={["Todas as disponibilidades", "Manhã", "Tarde", "Noite"]}
+          options={["Todas as disponibilidades", ...DISPONIBILIDADES]}
         />
       </Card>
     </section>

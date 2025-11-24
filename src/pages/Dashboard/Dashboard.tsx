@@ -79,11 +79,7 @@ function Dashboard() {
         </Button>
       </section>
 
-      <DashboardFilter
-        filters={filters}
-        setFilters={setFilters}
-        volunteers={volunteers}
-      />
+      <DashboardFilter filters={filters} setFilters={setFilters} />
 
       <DashboardTable
         filteredVolunteers={filteredVolunteers}

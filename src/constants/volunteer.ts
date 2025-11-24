@@ -7,3 +7,5 @@ export const CARGOS = [
 ];
 
 export const DISPONIBILIDADES = ["Manhã", "Tarde", "Noite"];
+
+export const STATUS = ["Ativo", "Inativo"];
