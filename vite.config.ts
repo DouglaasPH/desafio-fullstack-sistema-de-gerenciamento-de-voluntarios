@@ -1,22 +1,19 @@
-import path from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
-// https://vite.dev/config/
+// ou, se preferir manualmente:
+// import { resolve } from "path";
+
 export default defineConfig({
-  plugins: [tailwindcss(), react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: "./vitest.setup.ts", // ⚠ mesmo nível de vite.config.ts
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
+  plugins: [
+    react(),
+    tsconfigPaths(), // lê os paths do tsconfig.json
+  ],
+  // caso queira manualmente sem vite-tsconfig-paths:
+  // resolve: {
+  //   alias: {
+  //     '@': resolve(__dirname, 'src')
+  //   }
+  // }
 });
