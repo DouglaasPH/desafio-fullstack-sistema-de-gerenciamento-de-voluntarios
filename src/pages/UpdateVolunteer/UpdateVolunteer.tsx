@@ -69,7 +69,7 @@ function UpdateVolunteerPage() {
       </section>
       <section>
         <Card className="p-10 flex flex-col justify-between">
-          <div className="flex flex-col gap-3 w-55 lg:w-auto">
+          <div className="flex flex-col gap-3 w-auto">
             <h1 className="font-bold text-2xl lg:text-3xl">
               Atualizar Voluntário
             </h1>
@@ -127,7 +127,7 @@ function UpdateVolunteerPage() {
               options={["Manhã", "Tarde", "Noite"]}
             />
           </div>
-          <div className="flex justify-end gap-5">
+          <div className="flex flex-col md:flex-row justify-end gap-5">
             <Button
               className="bg-gray-100 hover:bg-gray-200 text-gray-900 cursor-pointer"
               onClick={() => navigate("/")}

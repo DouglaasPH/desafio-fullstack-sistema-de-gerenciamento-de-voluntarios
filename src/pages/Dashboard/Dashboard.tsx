@@ -61,8 +61,8 @@ function Dashboard() {
 
   return (
     <main className="w-full p-5 lg:p-10 flex flex-col gap-10">
-      <section className="flex flex-row justify-between items-end lg:items-center">
-        <div className="flex flex-col gap-3 w-55 lg:w-auto">
+      <section className="flex flex-col md:flex-row justify-between items-center gap-5 md:gap-0">
+        <div className="flex flex-col gap-3 w-full md:w-55 lg:w-auto">
           <h1 className="font-bold text-3xl lg:text-4xl">
             Gerenciamento de Voluntários
           </h1>
@@ -71,7 +71,7 @@ function Dashboard() {
           </p>
         </div>
         <Button
-          className="bg-blue-600 hover:bg-blue-500  text-white flex flex-row items-center gap-4 cursor-pointer"
+          className="bg-blue-600 hover:bg-blue-500  text-white flex flex-row items-center gap-4 cursor-pointer w-full md:w-auto"
           onClick={() => navigate("/novo")}
         >
           <Plus strokeWidth={3} className="size-4" />
