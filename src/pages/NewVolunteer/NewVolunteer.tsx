@@ -36,16 +36,33 @@ function NewVolunteer() {
     status,
     errorCreate,
     alert,
+    setAlert,
     emailError,
     telefoneError,
   } = useCreateVolunteerForm();
 
   useEffect(() => {
     if (status === "success") navigate("/");
-  }, [status]);
+    if (status === "error" && errorCreate?.response?.status === 409) {
+      setAlert({
+        title: "Não foi possível cadastrar voluntário.",
+        description: "O email digitado está vinculado a um voluntário.",
+      });
+
+      const timer = setTimeout(() => {
+        setAlert(null);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [status, errorCreate]);
 
   if (isSubmitting) return <LoadingScreen />;
+
   if (status === "error") {
+    if (errorCreate?.response?.status === 409) {
+      return null; // a tela continua e apenas o alerta aparece
+    }
     return renderError(errorCreate ?? undefined);
   }
 

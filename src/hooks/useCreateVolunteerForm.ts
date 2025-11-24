@@ -1,7 +1,14 @@
+// react
 import { useState } from "react";
-import { formatTelefone, validateEmail, validateTelefone } from "@/utils/utils";
-import type { CreateVolunteerData } from "@/types/volunteers";
+
+// hooks
 import { useCreateVolunteer } from "./useCreateVolunteer";
+
+// utils
+import { formatTelefone, validateEmail, validateTelefone } from "@/utils/utils";
+
+// types
+import type { CreateVolunteerData } from "@/types/volunteers";
 
 interface Alert {
   title: string;
@@ -70,6 +77,10 @@ export function useCreateVolunteerForm() {
         description:
           "Para cadastrar voluntário é necessário alterar corretamente todos campos abaixo.",
       });
+
+      setTimeout(() => {
+        setAlert(null);
+      }, 3000);
     }
 
     return condition;
@@ -77,7 +88,6 @@ export function useCreateVolunteerForm() {
 
   // SUBMIT PRINCIPAL
   const handleSubmit = () => {
-    console.log(form, emailError, telefoneError, alert);
     if (emailError || telefoneError) return;
 
     if (nothingChanged()) {
@@ -96,6 +106,7 @@ export function useCreateVolunteerForm() {
     status,
     errorCreate: error,
     alert,
+    setAlert,
     emailError,
     telefoneError,
   };
